@@ -10,6 +10,10 @@
     <p>Notable Ingredients: {{ sauce.notable_ingredients|linebreaks }}</p>
     <p>Heat Factor: {{ sauce.scoville_scale }} SHU </p>
   </div>
+  <div class="card-action">
+    <a href="{% url 'sauces_update' sauce.id %}">Edit</a>
+    <a href="{% url 'sauces_delete' sauce.id %}">Delete</a>
+  </div>
 </div>
 
 {% endblock %}
