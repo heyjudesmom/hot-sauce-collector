@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView , UpdateView, DeleteView
 # from django.http import HttpResponse
 from .models import Sauce
+from .forms import StockForm
 
 # Create your views here.
 def home(request):
@@ -16,7 +17,18 @@ def sauces_index(request):
 
 def sauces_detail(request, sauce_id):
     sauce = Sauce.objects.get(id=sauce_id)
-    return render(request, 'sauces/detail.html', { 'sauce': sauce })
+    stock_form = StockForm()
+    return render(request, 'sauces/detail.html', { 
+        'sauce': sauce, 'stock_form': stock_form
+        })
+
+def add_stock(request, sauce_id):
+    form = StockForm(request.POST)
+    if form.is_valid():
+        new_stock = form.save(commit=False)
+        new_stock.sauce_id = sauce_id
+        new_stock.save()
+    return redirect('detail', sauce_id=sauce_id)
 
 class SauceCreate(CreateView):
     model = Sauce
