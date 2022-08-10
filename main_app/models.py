@@ -1,6 +1,8 @@
+from sqlite3 import Timestamp
 from django.db import models
 from django.urls import reverse
-# Create your models here.
+
+from datetime import date
 
 AMOUNTS = (
     ('F', 'Full'), 
@@ -8,6 +10,26 @@ AMOUNTS = (
     ('L', 'Low'), 
     ('E', 'Empty')
 )
+
+MEALS = (
+  ('B', 'Breakfast'),
+  ('L', 'Lunch'),
+  ('D', 'Dinner'),
+)
+
+class Dish(models.Model):
+    name = models.CharField(max_length=75)
+    meal = models.CharField(
+    max_length=1,
+    choices=MEALS,
+    default=MEALS[0][0]
+  )
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('dish_detail', kwargs={'pk': self.id})
+
 
 class Sauce(models.Model):
     name = models.CharField(max_length=50)
@@ -20,6 +42,9 @@ class Sauce(models.Model):
     
     def get_absolute_url(self):
         return reverse('detail', kwargs={'sauce_id': self.id})
+
+    def checked_inventory_today(self):
+        return self.stock_set.filter(date=date.today()).count() >= 1
 
 class Stock(models.Model):
     date = models.DateField('Stock Date')
@@ -34,4 +59,4 @@ class Stock(models.Model):
         return f'{self.get_amount_display()} on {self.date}'
     
     class Meta:
-        ordering = ['-date']
+        ordering = ['-date', '-id']

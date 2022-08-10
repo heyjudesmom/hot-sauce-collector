@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView , UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
 # from django.http import HttpResponse
-from .models import Sauce
+from .models import Sauce, Dish
 from .forms import StockForm
 
 # Create your views here.
@@ -41,3 +42,21 @@ class SauceUpdate(UpdateView):
 class SauceDelete(DeleteView):
     model = Sauce
     success_url = '/sauces/'
+
+class DishList(ListView):
+  model = Dish
+
+class DishDetail(DetailView):
+  model = Dish
+
+class DishCreate(CreateView):
+  model = Dish
+  fields = '__all__'
+
+class DishUpdate(UpdateView):
+  model = Dish
+  fields = ['name', 'meal']
+
+class DishDelete(DeleteView):
+  model = Dish
+  success_url = '/dishes/'

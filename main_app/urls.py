@@ -10,4 +10,9 @@ urlpatterns = [
     path('sauces/<int:pk>/update/', views.SauceUpdate.as_view(), name='sauces_update'),
     path('sauces/<int:pk>/delete/', views.SauceDelete.as_view(), name='sauces_delete'),
     path('sauces/<int:sauce_id>/add_stock/', views.add_stock, name='add_stock'), 
+    path('dishes/', views.DishList.as_view(), name='dishes_index'),
+    path('dishes/<int:pk>/', views.DishDetail.as_view(), name='dishes_detail'),
+    path('dishes/create/', views.DishCreate.as_view(), name='dishes_create'),
+    path('dishes/<int:pk>/update/', views.DishUpdate.as_view(), name='dishes_update'),
+    path('dishes/<int:pk>/delete/', views.DishDelete.as_view(), name='dishes_delete'),
 ]
