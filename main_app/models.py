@@ -37,6 +37,7 @@ class Sauce(models.Model):
     region = models.CharField(max_length=50)
     notable_ingredients = models.TextField(max_length=100)
     scoville_scale = models.PositiveIntegerField()
+    dishes = models.ManyToManyField(Dish)
 
     def __str__(self):
         return f'({self.id}) {self.name}'

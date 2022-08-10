@@ -18,9 +18,13 @@ def sauces_index(request):
 
 def sauces_detail(request, sauce_id):
     sauce = Sauce.objects.get(id=sauce_id)
+    id_list = sauce.dishes.all().values_list('id')
+    dishes_sauce_doesnt_have = Dish.objects.exclude(id__in=id_list)
     stock_form = StockForm()
     return render(request, 'sauces/detail.html', { 
-        'sauce': sauce, 'stock_form': stock_form
+        'sauce': sauce, 
+        'stock_form': stock_form, 
+        'dishes': dishes_sauce_doesnt_have
         })
 
 def add_stock(request, sauce_id):
@@ -31,9 +35,18 @@ def add_stock(request, sauce_id):
         new_stock.save()
     return redirect('detail', sauce_id=sauce_id)
 
+def assoc_dish(request, sauce_id, dish_id):
+    Sauce.objects.get(id=sauce_id).dishes.add(dish_id)
+    return redirect('detail', sauce_id=sauce_id)
+
+def unassoc_dish(request, sauce_id, dish_id):
+    Sauce.objects.get(id=sauce_id).dishes.remove(dish_id)
+    return redirect('detail', sauce_id=sauce_id)
+
+
 class SauceCreate(CreateView):
     model = Sauce
-    fields = '__all__'
+    fields = ['name', 'region', 'notable_ingredients', 'scoville_scale']
 
 class SauceUpdate(UpdateView):
     model = Sauce
