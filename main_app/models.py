@@ -12,15 +12,16 @@ AMOUNTS = (
 )
 
 MEALS = (
-  ('B', 'Breakfast'),
-  ('L', 'Lunch'),
-  ('D', 'Dinner'),
+  ('Breakfast', 'Breakfast'),
+  ('Lunch', 'Lunch'),
+  ('Snack', 'Snack'),
+  ('Dinner', 'Dinner'),
 )
 
 class Dish(models.Model):
     name = models.CharField(max_length=75)
     meal = models.CharField(
-    max_length=1,
+    max_length=10,
     choices=MEALS,
     default=MEALS[0][0]
   )
@@ -28,7 +29,7 @@ class Dish(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('dish_detail', kwargs={'pk': self.id})
+        return reverse('dishes_detail', kwargs={'pk': self.id})
 
 
 class Sauce(models.Model):
