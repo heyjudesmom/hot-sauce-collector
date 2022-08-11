@@ -17,17 +17,28 @@
         <a href="{% url 'sauces_delete' sauce.id %}">Delete</a>
       </div>
     </div>
+    {% for photo in sauce.photo_set.all %}
+      <img class="responsive-img card-panel" src="{{photo.url}}">
+    {% empty %}
+      <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+    {% endfor %}
+    <form action="{% url 'add_photo' sauce.id %}" enctype="multipart/form-data" method="POST" alt="Sauce Photo" class="card-panel">
+      {% csrf_token %}
+      <input type="file" name="photo-file">
+      <br><br>
+      <input type="submit" class="btn" value="Upload Photo">
+    </form>
   </div>
   <div class="col s6">
+    <br>
+    {% if sauce.checked_inventory_today %}
+    <div class="card-panel teal-text center-align">{{sauce.name}} inventory has been logged today</div>
+    {% else %}
     <form action="{% url 'add_stock' sauce.id %}" method="POST">
       {% csrf_token %}
       {{ stock_form.as_p }}
       <button type="submit" class="btn">Update Inventory</button>
     </form>
-    <br>
-    {% if sauce.checked_inventory_today %}
-      <div class="card-panel teal-text center-align">{{sauce.name}} inventory has been logged today</div>
-    {% else %}
       <div class="card-panel red-text center-align">Take inventory of {{sauce.name}} today</div>
     {% endif %}
     <table class="striped">

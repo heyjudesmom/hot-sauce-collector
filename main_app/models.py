@@ -62,3 +62,10 @@ class Stock(models.Model):
     
     class Meta:
         ordering = ['-date', '-id']
+
+class Photo(models.Model):
+  url = models.CharField(max_length=200)
+  sauce = models.ForeignKey(Sauce, on_delete=models.CASCADE)
+
+  def __str__(self):
+    return f'Photo for sauce_id {self.sauce_id} at url {self.url}'

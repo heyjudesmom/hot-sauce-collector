@@ -1,8 +1,11 @@
+import os
+import uuid
+import boto3
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView , UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 # from django.http import HttpResponse
-from .models import Sauce, Dish
+from .models import Sauce, Dish, Photo
 from .forms import StockForm
 
 # Create your views here.
@@ -43,6 +46,25 @@ def unassoc_dish(request, sauce_id, dish_id):
     Sauce.objects.get(id=sauce_id).dishes.remove(dish_id)
     return redirect('detail', sauce_id=sauce_id)
 
+def add_photo(request, sauce_id):
+    # photo-file will be the "name" attribute on the <input type="file">
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        # need a unique "key" for S3 / needs image file extension too
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        # just in case something goes wrong
+        try:
+            bucket = os.environ['S3_BUCKET']
+            s3.upload_fileobj(photo_file, bucket, key)
+            # build the full url string
+            url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+            # we can assign to sauce_id or sauce (if you have a sauce object)
+            Photo.objects.create(url=url, sauce_id=sauce_id)
+        except Exception as e:
+            print('An error occurred uploading file to S3')
+            print(e)
+    return redirect('detail', sauce_id=sauce_id)
 
 class SauceCreate(CreateView):
     model = Sauce
